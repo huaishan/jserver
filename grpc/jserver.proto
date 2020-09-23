@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package jserver;
+
+enum StatusCode {
+    OK = 0;
+    Failed = 1;
+}
+
+service Jserver {
+    rpc Compile (CompileRequest) returns (CompileResponse) {}  // 用来检查是否能通过编译
+    rpc CallFunc (CallFuncRequest) returns (CallFuncResponse) {}  // 调用js脚本中的函数
+}
+
+message CompileRequest {
+    string script = 1;
+}
+
+message CompileResponse {
+    StatusCode code = 1;
+    string message = 2;
+}
+
+message CallFuncRequest {
+    string script = 1;
+    string func_name = 2;
+    bytes params = 3;  // json array
+    int32 timeout = 4;  // ms
+}
+
+message CallFuncResponse {
+    StatusCode code = 1;
+    string message = 2;
+    bytes result = 3;
+    string time_consuming = 4;
+}
