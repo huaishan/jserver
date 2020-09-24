@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-var port = flag.String("port", ":50051", "jserver port")
+var addr = flag.String("addr", "127.0.0.1:50051", "jserver addr")
 
 type server struct {
 	pb.UnimplementedJserverServer
@@ -113,13 +113,14 @@ Error:
 }
 
 func main() {
-	lis, err := net.Listen("tcp", *port)
+	flag.Parse()
+	lis, err := net.Listen("tcp", *addr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
 	pb.RegisterJserverServer(s, &server{})
-	log.Println("Listen " + *port)
+	log.Println("Listen " + *addr)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
